@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class SuratController extends Controller
@@ -31,20 +32,47 @@ class SuratController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:10240'
+            'nomor_surat' => 'required|string',
+            'jenis' => 'required|in:masuk,keluar',
+            'tanggal_surat' => 'required|date',
+            'pengirim' => 'required|string',
+            'nomor_pengirim' => 'required|string',
+            'penerima' => 'required|string',
+            'nomor_penerima' => 'required|string',
+            'alamat_penerima' => 'required|string',
+            'path' => 'required|string',
+            'perihal' => 'required|string',
         ]);
-
-        $file = $request->file('file');
-        $path = $file->store('surat');
+        // dd($request);
 
         Surat::create([
-            'user_id' => auth()->id(),
-            'nama_file' => $file->getClientOriginalName(),
-            'path' => $path,
-            'jenis' => 'masuk'
+            'user_id' => Auth::id(),
+            'nomor_surat' => $request->nomor_surat,
+            'jenis' => $request->jenis,
+            'tanggal_surat' => $request->tanggal_surat,
+            'pengirim' => $request->pengirim,
+            'nomor_pengirim' => $request->nomor_pengirim,
+            'penerima' => $request->penerima,
+            'nomor_penerima' => $request->nomor_penerima,
+            'alamat_penerima' => $request->alamat_penerima,
+            'path' => $request->path,
+            'perihal' => $request->perihal,
         ]);
 
-        return response()->json(['success' => true]);
+        return redirect()->back()->with('success', 'Surat berhasil dikirim!');
+    }
+
+    public function suratMasuk(){
+        $suratMasuk = Surat::where('jenis', 'masuk')->get();
+        // dd($suratMasuk);
+
+        return view('surat.masuk', compact('suratMasuk'));
+    }
+    public function suratKeluar(){
+        $suratKeluar = Surat::where('jenis', 'keluar')->get();
+        // dd($suratKeluar);
+
+        return view('surat.keluar', compact('suratKeluar'));
     }
 
     public function download(Surat $surat)
@@ -64,4 +92,6 @@ class SuratController extends Controller
 
         return back()->with('success', 'Surat berhasil dihapus');
     }
+
+
 } 

@@ -42,8 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    Route::get('/surat-masuk', [SuratController::class, 'masuk'])->name('surat.masuk');
-    Route::get('/surat-keluar', [SuratController::class, 'keluar'])->name('surat.keluar');
+    Route::get('/surat-masuk', [SuratController::class, 'suratMasuk'])->name('surat.masuk');
+    Route::get('/surat-keluar', [SuratController::class, 'suratKeluar'])->name('surat.keluar');
     Route::post('/surat', [SuratController::class, 'store'])->name('surat.store');
     Route::get('/surat/{surat}/download', [SuratController::class, 'download'])->name('surat.download');
     Route::get('/surat/{surat}/preview', [SuratController::class, 'preview'])->name('surat.preview');

@@ -15,36 +15,43 @@
                 </div>
                 <div class="divide-y divide-gray-100">
                     @forelse($suratKeluar as $surat)
-                    <div class="p-6 flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
-                                <i class="fas fa-file-pdf text-pink-400"></i>
+                        <div class="p-6 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-file-pdf text-pink-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-gray-800 font-medium">{{ $surat->nama_file }}</h3>
+                                    <p class="text-sm text-gray-500">
+                                        Dibuat {{ $surat->created_at->diffForHumans() }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Pengirim: {{ $surat->pengirim }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Perihal: {{ $surat->perihal }}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 class="text-gray-800 font-medium">{{ $surat->nama_file }}</h3>
-                                <p class="text-sm text-gray-500">
-                                    Dibuat {{ $surat->created_at->diffForHumans() }}
-                                </p>
+                            <div class="flex items-center gap-3 bg-red-500">
+                                <a href="{{ route('surat.download', $surat->id) }}"
+                                    class="text-gray-400 hover:text-gray-600">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                                <a href="{{ route('surat.preview', $surat->id) }}"
+                                    class="text-gray-400 hover:text-gray-600">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <h1>Hallo</h1>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <a href="{{ route('surat.download', $surat->id) }}" 
-                                class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-download"></i>
-                            </a>
-                            <a href="{{ route('surat.preview', $surat->id) }}" 
-                                class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </div>
-                    </div>
                     @empty
-                    <div class="p-6 text-center text-gray-500">
-                        Belum ada surat keluar
-                    </div>
+                        <div class="p-6 text-center text-gray-500">
+                            Belum ada surat keluar
+                        </div>
                     @endforelse
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>
