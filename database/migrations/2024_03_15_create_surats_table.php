@@ -9,21 +9,25 @@ return new class extends Migration
     public function up()
     {
         Schema::create('surats', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->string('path');
-            $table->enum('jenis', ['masuk', 'keluar']);
-            $table->string('nomor_surat');
+            $table->id('id_surat');
+            $table->string('no_surat', 50);
+            $table->unsignedBigInteger('id_admin');
+            $table->enum('jenis_surat', ['masuk', 'keluar']);
             $table->date('tanggal_surat');
-            $table->string('pengirim');
-            $table->string('nomor_pengirim');
-            $table->string('penerima');
-            $table->string('nomor_penerima');
-            $table->string('alamat_penerima');
-            $table->string('perihal');
+            $table->string('pengirim', 100);
+            $table->string('no_pengirim', 100);
+            $table->string('penerima', 100);
+            $table->string('no_penerima', 100);
+            $table->string('alamat_penerima', 100);
+            $table->string('perihal', 100);
+            $table->string('lampiran', 100)->nullable();
+            $table->string('path');
             $table->timestamps();
+
+            $table->foreign('id_admin')->references('id_admin')->on('admins')->onDelete('cascade');
         });
     }
+
 
     public function down()
     {

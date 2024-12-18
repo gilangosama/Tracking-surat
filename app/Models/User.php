@@ -17,11 +17,16 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $primaryKey = 'id_user';
+
     protected $fillable = [
+        'id_admin',
         'name',
-        'email',
         'password',
-        'role'
+        'email',
+        'no_telp',
+        'jabatan',
+        'role',
     ];
 
     /**
@@ -44,8 +49,15 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function surats()
+    // Relasi ke Admin
+    public function admin()
     {
-        return $this->hasMany(Surat::class);
+        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
+    }
+
+    // Relasi ke ActivityLog
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class, 'id_user', 'id_user');
     }
 }

@@ -41,7 +41,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Surat Masuk</p>
-                            <h3 class="text-xl font-bold text-gray-800">15</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $suratMasuk }}</h3>
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Surat Keluar</p>
-                            <h3 class="text-xl font-bold text-gray-800">25</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $suratKeluar }}</h3>
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Surat Selesai</p>
-                            <h3 class="text-xl font-bold text-gray-800">40</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $suratSelesai }}</h3>
                         </div>
                     </div>
                 </div>

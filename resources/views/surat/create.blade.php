@@ -55,7 +55,7 @@
 
             <!-- Form Container -->
             <div class="bg-white rounded-xl shadow-sm p-8">
-                <form method="POST" action="{{ route('surat.store') }}" class="max-w-3xl mx-auto">
+                <form method="POST" action="{{ route('surat.store') }}" class="max-w-3xl mx-auto" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Data Surat -->
@@ -65,32 +65,50 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-gray-600 mb-2">Jenis Surat</label>
-                                <select name="jenis" required
+                                <select name="jenis_surat" value={{ old('jenis_surat') }} required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                                     <option value="masuk">Masuk</option>
                                     <option value="keluar">Keluar</option>
                                 </select>
-                            </div>
+                        </div>
                             <div>
                                 <label class="block text-gray-600 mb-2">Nomor Surat</label>
-                                <input type="text" name="nomor_surat" required
+                                <input type="text" value="{{ old('no_surat') }}" name="no_surat" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
                             <div>
                                 <label class="block text-gray-600 mb-2">Perihal</label>
-                                <input type="text" name="perihal" required
+                                <input type="text" value="{{ old('perihal') }}" name="perihal" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-gray-600 mb-2">Lampiran</label>
+                                <input type="text" value="{{ old('lampiran') }}" name="lampiran" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
                             <div>
                                 <label class="block text-gray-600 mb-2">Tanggal Surat</label>
-                                <input type="date" name="tanggal_surat" required
+                                <input type="date" value="{{ old('tanggal_surat') }}" name="tanggal_surat" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
-                            <div>
-                                <label class="block text-gray-600 mb-2">Path File</label>
-                                <input type="text" name="path" required
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
+                            <div class="flex items-center justify-center w-full">
+                                <label for="dropzone-file"
+                                    class="flex flex-col items-center justify-center w-full h-40 border-2 border-pink-400 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
+                                                class="font-semibold">Click to upload</span> or drag and drop</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">PDF, DOCX</p>
+                                    </div>
+                                    <input id="dropzone-file" type="file" class="hidden" value="{{ old('path') }}" name="path" />
+                                </label>
                             </div>
+
                         </div>
                     </div>
 
@@ -101,12 +119,12 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-gray-600 mb-2">Nama Pengirim</label>
-                                <input type="text" name="pengirim" required
+                                <input type="text" value="{{ old('pengirim') }}" name="pengirim" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
                             <div>
                                 <label class="block text-gray-600 mb-2">Nomor Pengirim</label>
-                                <input type="tel" name="nomor_pengirim" required
+                                <input type="tel" value="{{ old('nomor_pengirim') }}" name="nomor_pengirim" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
                         </div>
@@ -119,17 +137,17 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-gray-600 mb-2">Nama Penerima</label>
-                                <input type="text" name="penerima" required
+                                <input type="text" value="{{ old('penerima') }}" name="penerima" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
                             <div>
                                 <label class="block text-gray-600 mb-2">Nomor Penerima</label>
-                                <input type="tel" name="nomor_penerima" required
+                                <input type="tel" value="{{  old('nomor_penerima') }}" name="nomor_penerima" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                             </div>
                             <div>
                                 <label class="block text-gray-600 mb-2">Alamat Penerima</label>
-                                <textarea name="alamat_penerima" rows="4" required
+                                <textarea name="alamat_penerima" value="{{ old('alamat_penerima') }}" rows="4" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition resize-vertical"></textarea>
                             </div>
 
