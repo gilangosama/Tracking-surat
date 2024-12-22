@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\Tracking;
 use App\Models\ActivityLog;
+use App\Models\Lampiran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -111,12 +112,22 @@ class SuratController extends Controller
 
     public function download(Surat $surat)
     {
-        return Storage::download($surat->path, $surat->nama_file);
+        // Pastikan file ada
+        if (!Storage::exists($surat->path)) {
+            return back()->with('error', 'File tidak ditemukan');
+        }
+
+        return Storage::download($surat->path);
     }
 
     public function preview(Surat $surat)
     {
-        return response()->file(Storage::path($surat->path));
+        // Pastikan file ada
+        if (!Storage::exists($surat->path)) {
+            return back()->with('error', 'File tidak ditemukan');
+        }
+
+        return response()->file(storage_path('app/' . $surat->path));
     }
 
     public function destroy(Surat $surat)
@@ -127,5 +138,55 @@ class SuratController extends Controller
         return back()->with('success', 'Surat berhasil dihapus');
     }
 
+    public function show(Surat $surat)
+    {
+        return view('surat.show', compact('surat'));
+    }
+
+    public function lampiran(Surat $surat)
+    {
+        $lampirans = $surat->lampirans;
+        return view('surat.lampiran', compact('surat', 'lampirans'));
+    }
+
+    public function storeLampiran(Request $request, Surat $surat)
+    {
+        $request->validate([
+            'file' => 'required|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048'
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = 'lampiran_' . time() . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('uploads/lampiran', $fileName);
+
+            Lampiran::create([
+                'id_surat' => $surat->id_surat,
+                'nama_file' => $file->getClientOriginalName(),
+                'path' => $filePath
+            ]);
+
+            return redirect()->back()->with('success', 'Lampiran berhasil ditambahkan');
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengunggah lampiran');
+    }
+
+    public function downloadLampiran(Lampiran $lampiran)
+    {
+        if (!Storage::exists($lampiran->path)) {
+            return back()->with('error', 'File tidak ditemukan');
+        }
+
+        return Storage::download($lampiran->path, $lampiran->nama_file);
+    }
+
+    public function destroyLampiran(Lampiran $lampiran)
+    {
+        Storage::delete($lampiran->path);
+        $lampiran->delete();
+
+        return back()->with('success', 'Lampiran berhasil dihapus');
+    }
 
 } 

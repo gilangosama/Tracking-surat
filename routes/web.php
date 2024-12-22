@@ -43,7 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/surat/{surat}/edit', [SuratController::class, 'edit'])->name('surat.edit');
     Route::delete('/surat/{surat}', [SuratController::class, 'destroy'])->name('surat.delete');
     Route::get('/surat/{surat}/lampiran', [SuratController::class, 'lampiran'])->name('surat.lampiran');
+    Route::post('/surat/{surat}/lampiran', [SuratController::class, 'storeLampiran'])->name('lampiran.store');
+    Route::get('/lampiran/{lampiran}/download', [SuratController::class, 'downloadLampiran'])->name('lampiran.download');
+    Route::delete('/lampiran/{lampiran}', [SuratController::class, 'destroyLampiran'])->name('lampiran.destroy');
     Route::delete('/surat/{surat}/distribution', [SuratController::class, 'distribution'])->name('surat.distribution');
+    Route::get('/surat/{surat}/download', [SuratController::class, 'download'])->name('surat.download');
+    Route::get('/surat/{surat}/preview', [SuratController::class, 'preview'])->name('surat.preview');
 });
 
 Route::middleware('auth')->group(function () {

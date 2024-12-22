@@ -3,17 +3,17 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
+                {{-- <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 rounded-xl p-1 bg-pink-400">
                         <span class="text-xl font-semibold text-gray-800 ml-3">Tracking Office</span>
                     </a>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Profile dropdown -->
             <div class="flex items-center">
-                <img src="{{ asset('images/profile.png') }}" alt="Profile" class="w-10 h-10 rounded-full mr-3">
+                {{-- <img src="{{ asset('images/profile.png') }}" alt="Profile" class="w-10 h-10 rounded-full mr-3"> --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center text-gray-700">
                         <span class="mr-2">{{ Auth::user()->name }}</span>
