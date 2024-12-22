@@ -3,7 +3,8 @@
         <!-- Sidebar -->
         <div class="fixed w-[280px] h-screen bg-white shadow-lg p-6 left-0 top-0 z-50">
             <div class="text-center mb-10 pb-5 border-b-2 border-gray-100">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-20 h-20 mx-auto mb-4 rounded-2xl p-1 bg-pink-400">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo"
+                    class="w-20 h-20 mx-auto mb-4 rounded-2xl p-1 bg-pink-400">
                 <h2 class="text-gray-800 text-xl font-semibold">Tracking Office</h2>
             </div>
 
@@ -13,7 +14,7 @@
                 <!-- Logout -->
                 <form method="POST" action="{{ route('logout') }}" class="mt-4">
                     @csrf
-                    <button type="submit" 
+                    <button type="submit"
                         class="flex w-full items-center px-5 py-4 text-gray-600 rounded-lg mb-2 hover:bg-gray-100 hover:text-pink-400 transition-all duration-300">
                         <i class="fas fa-sign-out-alt w-6 mr-3 text-lg"></i>
                         <span>Logout</span>
@@ -41,7 +42,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Surat Masuk</p>
-                            <h3 class="text-xl font-bold text-gray-800">15</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $suratMasuk }}</h3>
                         </div>
                     </div>
                 </div>
@@ -53,7 +54,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Surat Keluar</p>
-                            <h3 class="text-xl font-bold text-gray-800">25</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $suratKeluar }}</h3>
                         </div>
                     </div>
                 </div>
@@ -65,7 +66,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Surat Selesai</p>
-                            <h3 class="text-xl font-bold text-gray-800">40</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $suratSelesai }}</h3>
                         </div>
                     </div>
                 </div>
@@ -83,41 +84,29 @@
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
-                            <tr class="text-left bg-gray-50">
+                            <tr class="text-left bg-slate-200">
                                 <th class="px-6 py-3 text-gray-600">Nama</th>
-                                <th class="px-6 py-3 text-gray-600">Asal</th>
-                                <th class="px-6 py-3 text-gray-600">Tujuan</th>
+                                <th class="px-6 py-3 text-gray-600">Pengirim</th>
+                                <th class="px-6 py-3 text-gray-600">Penerima</th>
                                 <th class="px-6 py-3 text-gray-600">Status</th>
                                 <th class="px-6 py-3 text-gray-600">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4">John Doe</td>
-                                <td class="px-6 py-4">Jakarta</td>
-                                <td class="px-6 py-4">Bandung</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-3 py-1 text-xs text-green-800 bg-green-100 rounded-full">
-                                        Selesai
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <button class="text-pink-400 hover:text-pink-500">Detail</button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4">Jane Smith</td>
-                                <td class="px-6 py-4">Surabaya</td>
-                                <td class="px-6 py-4">Jakarta</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-3 py-1 text-xs text-yellow-800 bg-yellow-100 rounded-full">
-                                        Proses
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <button class="text-pink-400 hover:text-pink-500">Detail</button>
-                                </td>
-                            </tr>
+                            @foreach ($suratTracking as $surat)
+                                <tr>
+                                    <td>{{ $surat->admin->name }}</td>
+                                    <td>{{ $surat->pengirim }}</td>
+                                    <td>{{ $surat->penerima }}</td>
+                                    <td>{{ $surat->lastTracking->status_surat ?? 'tidak ada status' }}</td>
+                                    <td>
+                                        <div class="flex gap-2 mb-2">
+                                            <a href="{{ route('surat.show', $surat->id_surat) }}"
+                                                class="text-white bg-pink-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Detail</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

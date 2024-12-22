@@ -22,68 +22,63 @@
                 </form>
             </div>
         </div>
-
-        <!-- Main Content -->
         <div class="flex-1 ml-[280px] p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-800">Cek Track Surat</h1>
-                {{-- <div class="flex items-center">
-                    <img src="{{ asset('profile.png') }}" alt="Profile" class="w-10 h-10 rounded-full mr-3">
-                    <span class="text-gray-700">{{ Auth::user()->name }}</span>
-                </div> --}}
-            </div>
+            <h1 class="text-2xl font-bold mb-4">Tracking Data</h1>
+            <x-primary-button x-data="" x-on:click="$dispatch('open-modal'. 'create-track')">{{ __('Add Track') }}</x-primary-button>
 
-            <!-- Tracking Container -->
-            <div class="bg-white rounded-xl shadow-sm p-8">
-                <!-- Info Section -->
-                <div class="bg-gray-50 p-6 rounded-lg mb-8">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-gray-600 font-medium mb-2">Username:</label>
-                            <span class="text-gray-800">{{ Auth::user()->name }}</span>
-                        </div>
-                        <div>
-                            <label class="block text-gray-600 font-medium mb-2">Tujuan:</label>
-                            <span class="text-gray-800">Cirebon, Jawa Barat</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Tracking Data Table -->
+            <table class="min-w-full bg-white mt-4">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">ID</th>
+                        <th class="py-2 px-4 border-b">Description</th>
+                        <th class="py-2 px-4 border-b">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example Data -->
+                    <tr>
+                        <td class="py-2 px-4 border-b">1</td>
+                        <td class="py-2 px-4 border-b">Sample Tracking</td>
+                        <td class="py-2 px-4 border-b">2023-10-01</td>
+                    </tr>
+                    <!-- Add your dynamic data here -->
+                </tbody>
+            </table>
 
-                <!-- Timeline Tracking -->
-                <div class="relative">
-                    <div class="flex justify-between items-center">
-                        <!-- Timeline Items -->
-                        @foreach([
-                        ['status' => 'Di Post', 'location' => 'Jakarta Pusat', 'date' => '20 Mar 2024', 'completed' =>
-                        true],
-                        ['status' => 'Kota Transit', 'location' => 'Bandung', 'date' => '21 Mar 2024', 'completed' =>
-                        true],
-                        ['status' => 'Post Center', 'location' => 'Bandung', 'date' => '22 Mar 2024', 'completed' =>
-                        false],
-                        ['status' => 'Tujuan', 'location' => 'Cirebon', 'date' => '-', 'completed' => false]
-                        ] as $item)
-                        <div class="relative flex flex-col items-center w-1/4">
-                            <div
-                                class="w-8 h-8 {{ $item['completed'] ? 'bg-pink-400' : 'bg-gray-200' }} rounded-full flex items-center justify-center">
-                                <i
-                                    class="fas {{ $item['completed'] ? 'fa-check' : 'fa-circle' }} text-white text-sm"></i>
-                            </div>
-                            <div class="mt-3 text-center">
-                                <h3 class="font-medium text-gray-900">{{ $item['status'] }}</h3>
-                                <p class="text-sm text-gray-500">{{ $item['location'] }}</p>
-                                <span class="text-xs text-gray-400">{{ $item['date'] }}</span>
-                            </div>
-                        </div>
-                        @endforeach
+            <!-- Modal -->
+            <x-modal name="create-track" :show="$errors->userDeletion->isNotEmpty()" focusable>
+                <form method="post" action="" class="p-6">
+                    @csrf
+
+                    <h2 class="text-lg font-medium text-gray-900">
+                        {{ __('Are you sure you want to delete your account?') }}
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                    </p>
+
+                    <div class="mt-6">
+                        <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+
+                        <x-text-input id="password" name="password" type="password" class="mt-1 block w-3/4"
+                            placeholder="{{ __('Password') }}" />
+
+                        <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
                     </div>
 
-                    <!-- Connecting Line -->
-                    <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10"></div>
-                </div>
-            </div>
+                    <div class="mt-6 flex justify-end">
+                        <x-secondary-button x-on:click="$dispatch('close')">
+                            {{ __('Cancel') }}
+                        </x-secondary-button>
+
+                        <x-danger-button class="ms-3">
+                            {{ __('Delete Account') }}
+                        </x-danger-button>
+                    </div>
+                </form>
+            </x-modal>
         </div>
     </div>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </x-app-layout>
