@@ -103,18 +103,6 @@
                                         <div class="flex gap-2 mb-2">
                                             <a href="{{ route('surat.show', $surat->id_surat) }}"
                                                 class="text-white bg-pink-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Detail</a>
-                                            <a href="{{ route('surat.edit', $surat->id_surat) }}"
-                                                class="text-white bg-blue-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Edit</a>
-                                            <a href="{{ route('surat.delete', $surat->id_surat) }}"
-                                                class="text-white bg-red-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Hapus</a>
-                                        </div>
-                                        <div class="flex gap-2">
-                                            <a href="{{ route('surat.tracking', $surat->id_surat) }}"
-                                                class="text-white bg-pink-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Tracking</a>
-                                            <a href="{{ route('surat.lampiran', $surat->id_surat) }}"
-                                                class="text-white bg-yellow-400 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Lampiran</a>
-                                            <a href="{{ route('surat.distribution', $surat->id_surat) }}"
-                                                class="text-white bg-green-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Selesai</a>
                                         </div>
                                     </td>
                                 </tr>
