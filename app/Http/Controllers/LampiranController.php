@@ -63,7 +63,7 @@ class LampiranController extends Controller
     {
         $idLampiran = Lampiran::findOrFail($idLampiran);
         $nama_file = $idLampiran->nama_file;
-        if (!Storage::disk('public')->exists($nama_file)) {
+        if (Storage::disk('public')->exists($nama_file)) {
             return Storage::disk('public')->download($nama_file);
         }
 

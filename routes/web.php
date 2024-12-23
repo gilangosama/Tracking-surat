@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\NotificationController;
 
 /*
@@ -43,7 +44,9 @@ Route::middleware('auth')->group(function(){
     Route::delete('/lampiran/{lampiran}', [LampiranController::class, 'destroy'])->name('lampiran.destroy');
     Route::get('/lampiran/{lampiran}/download', [LampiranController::class, 'downloadLampiran'])->name('lampiran.download');
 });
-
+Route::middleware('auth')->group(function(){
+    Route::post('/surat/distribution', [DistributionController::class, 'store'])->name('distribution.store');
+});
 Route::middleware('auth')->group(function () {
     Route::get('/surat-masuk', [SuratController::class, 'suratMasuk'])->name('surat.masuk');
     Route::get('/surat-keluar', [SuratController::class, 'suratKeluar'])->name('surat.keluar');
@@ -52,7 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/surat/{surat}/edit', [SuratController::class, 'edit'])->name('surat.edit');
     Route::put('/surat/{surat}', [SuratController::class, 'update'])->name('surat.update'); // Add this line
     Route::delete('/surat/{surat}', [SuratController::class, 'destroy'])->name('surat.delete');
-    Route::delete('/surat/{surat}/distribution', [SuratController::class, 'distribution'])->name('surat.distribution');
     Route::get('/surat/{surat}/download', [SuratController::class, 'download'])->name('surat.download');
     Route::get('/surat/{surat}/preview', [SuratController::class, 'preview'])->name('surat.preview');
 });

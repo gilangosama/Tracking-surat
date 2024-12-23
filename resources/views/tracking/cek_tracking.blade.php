@@ -40,9 +40,14 @@
                         <x-primary-button type="submit">Cari</x-primary-button>
                     </form>
                     @if (session('error'))
-                        <div class="text-red-500 bg-red-100 p-4 rounded-lg mb-4">
-                            {{ session('error') }}
-                        </div>
+                        <script>
+                            Swal.fire({
+                                title: "Error!",
+                                text: "{{ session('error') }}",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        </script>
                     @endif
                 </div>
 
