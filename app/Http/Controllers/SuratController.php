@@ -13,30 +13,10 @@ use Illuminate\Support\Facades\Storage;
 
 class SuratController extends Controller
 {
-    // public function masuk()
-    // {
-    //     $suratMasuk = Surat::where('user_id', auth()->id())
-    //         ->where('jenis_surat', 'masuk')
-    //         ->latest()
-    //         ->get();
-
-    //     return view('surat.masuk', compact('suratMasuk'));
-    // }
-
-    // public function keluar()
-    // {
-    //     $suratKeluar = Surat::where('user_id', auth()->id())
-    //         ->where('jenis_surat', 'keluar')
-    //         ->latest()
-    //         ->get();
-
-    //     return view('surat.keluar', compact('suratKeluar'));
-    // }
-
     public function store(Request $request)
     {
         $request->validate([
-            'no_surat' => 'required|string',
+            'no_surat' => 'required|string|unique:surats',
             'jenis_surat' => 'required|in:masuk,keluar',
             'tanggal_surat' => 'required|date',
             'pengirim' => 'required|string',
@@ -49,7 +29,8 @@ class SuratController extends Controller
         ], [
             'path.mimes' => 'File harus berupa PDF atau Word (.doc, .docx).',
             'path.required' => 'File surat harus diunggah.',
-            'path.max' => 'Ukuran file maximal 2MB.'
+            'path.max' => 'Ukuran file maximal 2MB.',
+            'unique' => 'Nomor surat sudah ada.'
         ]);
 
         if ($request->hasFile('path')) {
@@ -57,15 +38,9 @@ class SuratController extends Controller
             $fileName = 'surat_' . time() . '.' . $request->file('path')->getClientOriginalExtension();
             $filePath = $request->file('path')->storeAs('uploads/surat', $fileName);
         }
-        
-        // Generate unique 10-digit random ID
-        // do {
-        //     $randomId = random_int(1000000000, 9999999999); // 10 digit
-        // } while (Surat::where('id', $randomId)->exists());
-        // dd($request, $filePath, );
 
         $surat = Surat::create([
-            'id_admin' => Auth::user()->id_admin,
+            'id_user' => Auth::user()->id_user,
             'no_surat' => $request->no_surat,
             'jenis_surat' => $request->jenis_surat,
             'tanggal_surat' => $request->tanggal_surat,
@@ -93,18 +68,20 @@ class SuratController extends Controller
             'deskripsi' => 'Melakukan input surat yang akan di kirim.' 
         ]);
         
-
-        return redirect()->back()->with('success', 'Surat berhasil dikirim!');
+        if ($surat->jenis_surat == 'masuk') {
+            return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
+        }
+        return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
     }
 
     public function suratMasuk(){
-        $suratMasuk = Surat::where('jenis_surat', 'masuk')->get();
+        $suratMasuk = Surat::with('user')->where('jenis_surat', 'masuk')->get();
         // dd($suratMasuk);
 
         return view('surat.masuk', compact('suratMasuk'));
     }
     public function suratKeluar(){
-        $suratKeluar = Surat::with('admin')->where('jenis_surat', 'keluar')->get();
+        $suratKeluar = Surat::with('user')->where('jenis_surat', 'keluar')->get();
         // dd($suratKeluar);
 
         return view('surat.keluar', compact('suratKeluar'));
@@ -143,12 +120,6 @@ class SuratController extends Controller
         return view('surat.show', compact('surat'));
     }
 
-    public function lampiran(Surat $surat)
-    {
-        $lampirans = $surat->lampirans;
-        return view('surat.lampiran', compact('surat', 'lampirans'));
-    }
-
     public function storeLampiran(Request $request, Surat $surat)
     {
         $request->validate([
@@ -172,14 +143,7 @@ class SuratController extends Controller
         return redirect()->back()->with('error', 'Gagal mengunggah lampiran');
     }
 
-    public function downloadLampiran(Lampiran $lampiran)
-    {
-        if (!Storage::exists($lampiran->path)) {
-            return back()->with('error', 'File tidak ditemukan');
-        }
 
-        return Storage::download($lampiran->path, $lampiran->nama_file);
-    }
 
     public function destroyLampiran(Lampiran $lampiran)
     {
@@ -189,4 +153,57 @@ class SuratController extends Controller
         return back()->with('success', 'Lampiran berhasil dihapus');
     }
 
-} 
+    public function edit(Surat $surat)
+    {
+        return view('surat.create', compact('surat'));
+    }
+
+    public function update(Request $request, Surat $surat)
+    {
+        $request->validate([
+            'no_surat' => 'required|string|unique:surats,no_surat,' . $surat->id_surat . ',id_surat',
+            'jenis_surat' => 'required|in:masuk,keluar',
+            'tanggal_surat' => 'required|date',
+            'pengirim' => 'required|string',
+            'nomor_pengirim' => 'required|string',
+            'penerima' => 'required|string',
+            'nomor_penerima' => 'required|string',
+            'alamat_penerima' => 'required|string',
+            'path' => 'nullable|mimes:pdf,doc,docx|max:2048',
+            'perihal' => 'required|string',
+        ], [
+            'path.mimes' => 'File harus berupa PDF atau Word (.doc, .docx).',
+            'path.max' => 'Ukuran file maximal 2MB.',
+            'unique' => 'Nomor surat sudah ada.'
+        ]);
+
+        if ($request->hasFile('path')) {
+            // Hapus file lama
+            Storage::delete($surat->path);
+
+            // Tentukan nama file yang akan disimpan
+            $fileName = 'surat_' . time() . '.' . $request->file('path')->getClientOriginalExtension();
+            $filePath = $request->file('path')->storeAs('uploads/surat', $fileName);
+            $surat->path = $filePath;
+        }
+
+        $surat->update([
+            'no_surat' => $request->no_surat,
+            'jenis_surat' => $request->jenis_surat,
+            'tanggal_surat' => $request->tanggal_surat,
+            'pengirim' => $request->pengirim,
+            'no_pengirim' => $request->nomor_pengirim,
+            'penerima' => $request->penerima,
+            'no_penerima' => $request->nomor_penerima,
+            'alamat_penerima' => $request->alamat_penerima,
+            'perihal' => $request->perihal,
+            'lampiran' => $request->lampiran
+        ]);
+        
+        if ($surat->jenis_surat == 'masuk') {
+            return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
+        }
+        return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
+    }
+
+}

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email', 50);
             $table->string('no_telp', 20)->nullable();
             $table->string('jabatan', 50)->nullable();
-            $table->enum('role', ['admin', 'staff', 'manager']);
+            $table->enum('role', ['admin', 'user'])->default('user');
             $table->timestamps();
 
             $table->foreign('id_admin')->references('id_admin')->on('admins')->onDelete('set null');

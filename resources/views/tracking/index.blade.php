@@ -22,10 +22,30 @@
                 </form>
             </div>
         </div>
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "{{ session('success') }}",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                });
+            </script>
+        @endif
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    title: "Error!",
+                    text: "@foreach ($errors->all() as $error){{ $error }}@endforeach",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            </script>
+        @endif
         <div class="flex-1 ml-[280px] p-8">
             <h1 class="text-2xl font-bold mb-4">Tracking Data</h1>
             <x-primary-button x-data=""
-                x-on:click="$dispatch('open-modal'. 'create-track')">{{ __('Add Track') }}</x-primary-button>
+                x-on:click="$dispatch('open-modal', 'create-track')">{{ __('Add Track') }}</x-primary-button>
 
             <!-- Tracking Data Table -->
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-6 bg-white rounded-xl mt-4">
@@ -63,25 +83,25 @@
             </div>
 
             <!-- Modal -->
-            <x-modal name="create-track" :show="$errors->userDeletion->isNotEmpty()" focusable>
-                <form method="post" action="" class="p-6">
+            <x-modal name="create-track" focusable>
+                <form method="post" action="{{ route('tracking.store') }}" class="p-6">
                     @csrf
-
-                    <h2 class="text-lg font-medium text-gray-900">
-                        {{ __('Are you sure you want to delete your account?') }}
-                    </h2>
-
-                    <p class="mt-1 text-sm text-gray-600">
-                        {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-                    </p>
-
-                    <div class="mt-6">
-                        <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                        <x-text-input id="password" name="password" type="password" class="mt-1 block w-3/4"
-                            placeholder="{{ __('Password') }}" />
-
-                        <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                    <!-- Data Surat -->
+                    <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                        <h3 class="text-gray-800 text-lg font-semibold mb-5 pb-3 border-b-2 border-pink-400">Tambah
+                            Tracking
+                        </h3>
+                        <div class="space-y-6">
+                            <input type="hidden" name="status_surat" value="sedang dikirim" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
+                            <input type="hidden" name="id_surat" value="{{ $surat }}" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
+                            <div>
+                                <label for="lokasi" class="block text-gray-600 mb-2">Lokasi</label>
+                                <textarea type="text" value="{{ old('lokasi') }}" name="lokasi" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition"></textarea>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-6 flex justify-end">
@@ -89,9 +109,9 @@
                             {{ __('Cancel') }}
                         </x-secondary-button>
 
-                        <x-danger-button class="ms-3">
-                            {{ __('Delete Account') }}
-                        </x-danger-button>
+                        <x-primary-button class="ms-3">
+                            {{ __('Add Tracking') }}
+                        </x-primary-button>
                     </div>
                 </form>
             </x-modal>

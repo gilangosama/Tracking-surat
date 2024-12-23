@@ -12,57 +12,44 @@ class TrackingController extends Controller
     {   
         $tracking = Tracking::where('id_surat', $surat)->get();
         // dd($tracking);
-        return view('tracking.index', compact('tracking'));
-    }
-
-    public function create()
-    {
-        return view('tracking.create');
+        return view('tracking.index', compact('surat','tracking'));
     }
 
     public function store(Request $request)
     {
         // Validate and store the data
         $validatedData = $request->validate([
-            'field1' => 'required',
-            'field2' => 'required',
+            'status_surat' => 'required',
+            'id_surat' => 'required',
+            'lokasi' => 'required',
         ]);
 
         // Create a new tracking record
         $tracking = new Tracking();
-        $tracking->field1 = $validatedData['field1'];
-        $tracking->field2 = $validatedData['field2'];
+        $tracking->status_surat = $validatedData['status_surat'];
+        $tracking->id_surat = $validatedData['id_surat'];
+        $tracking->lokasi = $validatedData['lokasi'];
+        $tracking->tanggal_tracking = now(); // Set the current date and time
         $tracking->save();
 
-        return redirect()->route('tracking.index')->with('success', 'Tracking created successfully.');
-    }
-
-    public function show($id)
-    {
-        $tracking = Tracking::findOrFail($id);
-        return view('tracking.show', compact('tracking'));
-    }
-
-    public function edit($id)
-    {
-        $tracking = Tracking::findOrFail($id);
-        return view('tracking.edit', compact('tracking'));
+        return redirect()->back()->with('success', 'Tracking created successfully.');
     }
 
     public function update(Request $request, $id)
     {
         // Validate and update the data
         $validatedData = $request->validate([
-            'field1' => 'required',
-            'field2' => 'required',
+            'status_surat' => 'required',
+            'lokasi' => 'required',
         ]);
 
         $tracking = Tracking::findOrFail($id);
-        $tracking->field1 = $validatedData['field1'];
-        $tracking->field2 = $validatedData['field2'];
+        $tracking->status_surat = $validatedData['status_surat'];
+        $tracking->lokasi = $validatedData['lokasi'];
+        $tracking->tanggal_tracking = now(); // Update the date and time
         $tracking->save();
 
-        return redirect()->route('tracking.index')->with('success', 'Tracking updated successfully.');
+        return redirect()->route('tracking.index', ['surat' => $tracking->id_surat])->with('success', 'Tracking updated successfully.');
     }
 
     public function destroy($id)
@@ -70,7 +57,7 @@ class TrackingController extends Controller
         $tracking = Tracking::findOrFail($id);
         $tracking->delete();
 
-        return redirect()->route('tracking.index')->with('success', 'Tracking deleted successfully.');
+        return redirect()->back()->with('success', 'Tracking deleted successfully.');
     }
 
     public function history(Request $request)
@@ -86,11 +73,9 @@ class TrackingController extends Controller
             ->where('no_surat', $search)
             ->first();
 
-        // dd($surat->trackings);
-
-        // Jika surat tidak ditemukan, kembali dengan pesan error
+        // Jika surat tidak ditemukan, kembalikan view dengan pesan error
         if (!$surat) {
-            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+            return back()->with('error', 'Surat tidak ditemukan');
         }
 
         // Format data tracking untuk ditampilkan di view
@@ -98,13 +83,13 @@ class TrackingController extends Controller
             return [
                 'status' => $item->status_surat,
                 'location' => $item->lokasi,
-                'date' => $item->tanggal_tracking ? $item->tanggal_tracking->format('d M Y') : '-',
+                'date' => $item->tanggal_tracking ? \Carbon\Carbon::parse($item->tanggal_tracking)->format('d M Y') : '-',
                 'completed' => $item->status_surat === 'Di Post' || $item->status_surat === 'Kota Transit',
             ];
         });
 
         // Kembalikan view dengan data surat dan tracking
-        return view('history-track', [
+        return view('tracking.cek_tracking', [
             'surat' => $surat,
             'items' => $items,
         ]);
