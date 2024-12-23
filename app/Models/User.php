@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ActivityLog::class, 'id_user', 'id_user');
     }
+
+    public function surats()
+    {
+        return $this->hasMany(Surat::class, 'id_user', 'id_user');
+    }
 }

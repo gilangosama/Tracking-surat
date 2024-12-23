@@ -24,9 +24,4 @@ class Admin extends Model
         return $this->hasMany(User::class, 'id_admin', 'id_admin');
     }
 
-    // Relasi ke Surat
-    public function surats()
-    {
-        return $this->hasMany(Surat::class, 'id_admin', 'id_admin');
-    }
 }

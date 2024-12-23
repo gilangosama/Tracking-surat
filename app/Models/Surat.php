@@ -9,7 +9,7 @@ class Surat extends Model
     protected $primaryKey = 'id_surat';
 
     protected $fillable = [
-        'id_admin',
+        'id_user',
         'jenis_surat',
         'no_surat',
         'perihal',
@@ -24,9 +24,9 @@ class Surat extends Model
     ];
 
     // Relasi ke Admin
-    public function admin()
+    public function user()
     {
-        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
     // Relasi ke Lampiran
@@ -44,9 +44,7 @@ class Surat extends Model
     {
         return $this->hasOne(Tracking::class, 'id_surat', 'id_surat')
                     ->latest('created_at');
-                    // ->where('status_surat'); // Tambahkan kondisi
     }
-
 
     // Relasi ke Distribution
     public function distributions()

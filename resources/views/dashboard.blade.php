@@ -97,7 +97,7 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
-                                        {{ $surat->admin->name }}
+                                        {{ $surat->user->name }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

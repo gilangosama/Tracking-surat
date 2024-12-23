@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('surats', function (Blueprint $table) {
             $table->id('id_surat');
-            $table->string('no_surat', 50);
-            $table->unsignedBigInteger('id_admin');
+            $table->string('no_surat', 50)->unique();
+            $table->unsignedBigInteger('id_user');
             $table->enum('jenis_surat', ['masuk', 'keluar']);
             $table->date('tanggal_surat');
             $table->string('pengirim', 100);
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('path');
             $table->timestamps();
 
-            $table->foreign('id_admin')->references('id_admin')->on('admins')->onDelete('cascade');
+            $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 
