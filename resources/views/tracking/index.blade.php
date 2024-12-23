@@ -24,27 +24,43 @@
         </div>
         <div class="flex-1 ml-[280px] p-8">
             <h1 class="text-2xl font-bold mb-4">Tracking Data</h1>
-            <x-primary-button x-data="" x-on:click="$dispatch('open-modal'. 'create-track')">{{ __('Add Track') }}</x-primary-button>
+            <x-primary-button x-data=""
+                x-on:click="$dispatch('open-modal'. 'create-track')">{{ __('Add Track') }}</x-primary-button>
 
             <!-- Tracking Data Table -->
-            <table class="min-w-full bg-white mt-4">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border-b">ID</th>
-                        <th class="py-2 px-4 border-b">Description</th>
-                        <th class="py-2 px-4 border-b">Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example Data -->
-                    <tr>
-                        <td class="py-2 px-4 border-b">1</td>
-                        <td class="py-2 px-4 border-b">Sample Tracking</td>
-                        <td class="py-2 px-4 border-b">2023-10-01</td>
-                    </tr>
-                    <!-- Add your dynamic data here -->
-                </tbody>
-            </table>
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-6 bg-white rounded-xl mt-4">
+                <table id="example" class="display" style="width:100%">
+                    <thead class="justify-center">
+                        <tr>
+                            <th>Status</th>
+                            <th>Lokasi</th>
+                            <th>Tanggal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($tracking as $track)
+                            <tr>
+                                <td>{{ $track->status_surat }}</td>
+                                <td>{{ $track->lokasi }}</td>
+                                <td>{{ $track->tanggal_tracking }}</td>
+                                <td>
+                                    {{-- <div class="flex gap-2 mb-2">
+                                            <a href="{{ route('surat.show', $surat->id_surat) }}" class="text-white bg-pink-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Detail</a>
+                                            <a href="{{ route('surat.edit', $surat->id_surat) }}" class="text-white bg-blue-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Edit</a>
+                                            <a href="{{ route('surat.delete', $surat->id_surat) }}" class="text-white bg-red-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Hapus</a>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <a href="{{ route('tracking', $surat->id_surat) }}" class="text-white bg-pink-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Tracking</a>
+                                            <a href="{{ route('surat.lampiran', $surat->id_surat) }}" class="text-white bg-yellow-400 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Lampiran</a>
+                                            <a href="{{ route('surat.distribution', $surat->id_surat) }}" class="text-white bg-green-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Selesai</a>
+                                        </div> --}}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Modal -->
             <x-modal name="create-track" :show="$errors->userDeletion->isNotEmpty()" focusable>

@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function(){
 Route::middleware('auth')->group(function(){
     Route::get('/tracking/{surat}', [TrackingController::class, 'index'])->name('tracking');
     Route::post('/store/tracking', [TrackingController::class, 'store'])->name('store-tracking');
+    Route::post('/history/tracking', [TrackingController::class, 'history'])->name('history-track');
     Route::put('/update/tracking', [TrackingController::class, 'update'])->name('update-tracking');
     Route::delete('/delete/tracking', [TrackingController::class, 'delete'])->name('delete-tracking');
 });

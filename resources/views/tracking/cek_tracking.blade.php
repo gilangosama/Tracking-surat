@@ -35,52 +35,54 @@
 
             <!-- Tracking Container -->
             <div class="bg-white rounded-xl shadow-sm p-8">
-                <!-- Info Section -->
-                <div class="bg-gray-50 p-6 rounded-lg mb-8">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-gray-600 font-medium mb-2">Username:</label>
-                            <span class="text-gray-800">{{ Auth::user()->name }}</span>
+                <div class="search bg-gray p-6 rounded-lg mb-8">
+                    <form method="POST" action="{{ route('history-track') }}">
+                        @csrf
+                        <h1 class="text-xl font-semibold">Cari surat</h1>
+                        <x-text-input id="search" name="search" type="search" class="my-2.5 block w-full"
+                            autocomplete="search" />
+                        <x-primary-button type="submit">Cari</x-primary-button>
+                    </form>
+                    @if (session('error'))
+                        <div class="text-red-500 bg-red-100 p-4 rounded-lg mb-4">
+                            {{ session('error') }}
                         </div>
-                        <div>
-                            <label class="block text-gray-600 font-medium mb-2">Tujuan:</label>
-                            <span class="text-gray-800">Cirebon, Jawa Barat</span>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
-                <!-- Timeline Tracking -->
-                <div class="relative">
-                    <div class="flex justify-between items-center">
-                        <!-- Timeline Items -->
-                        @foreach([
-                        ['status' => 'Di Post', 'location' => 'Jakarta Pusat', 'date' => '20 Mar 2024', 'completed' =>
-                        true],
-                        ['status' => 'Kota Transit', 'location' => 'Bandung', 'date' => '21 Mar 2024', 'completed' =>
-                        true],
-                        ['status' => 'Post Center', 'location' => 'Bandung', 'date' => '22 Mar 2024', 'completed' =>
-                        false],
-                        ['status' => 'Tujuan', 'location' => 'Cirebon', 'date' => '-', 'completed' => false]
-                        ] as $item)
-                        <div class="relative flex flex-col items-center w-1/4">
-                            <div
-                                class="w-8 h-8 {{ $item['completed'] ? 'bg-pink-400' : 'bg-gray-200' }} rounded-full flex items-center justify-center">
-                                <i
-                                    class="fas {{ $item['completed'] ? 'fa-check' : 'fa-circle' }} text-white text-sm"></i>
-                            </div>
-                            <div class="mt-3 text-center">
-                                <h3 class="font-medium text-gray-900">{{ $item['status'] }}</h3>
-                                <p class="text-sm text-gray-500">{{ $item['location'] }}</p>
-                                <span class="text-xs text-gray-400">{{ $item['date'] }}</span>
-                            </div>
-                        </div>
-                        @endforeach
+                @if (isset($surat))
+                    <!-- Info Section -->
+                    <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                        <h2 class="text-lg font-semibold mb-4">Informasi Surat</h2>
+                        <p><strong>No. Surat:</strong> {{ $surat->no_surat }}</p>
+                        <p><strong>Judul:</strong> {{ $surat->judul ?? '-' }}</p>
                     </div>
 
-                    <!-- Connecting Line -->
-                    <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10"></div>
-                </div>
+                    <!-- Timeline Tracking -->
+                    <div class="relative">
+                        <div class="flex justify-between items-center">
+                            @foreach ($items as $item)
+                                <div class="relative flex flex-col items-center w-1/4">
+                                    <div
+                                        class="w-8 h-8 {{ $item['completed'] ? 'bg-pink-400' : 'bg-gray-200' }} rounded-full flex items-center justify-center">
+                                        <i
+                                            class="fas {{ $item['completed'] ? 'fa-check' : 'fa-circle' }} text-white text-sm"></i>
+                                    </div>
+                                    <div class="mt-3 text-center">
+                                        <h3 class="font-medium text-gray-900">{{ $item['status'] }}</h3>
+                                        <p class="text-sm text-gray-500">{{ $item['location'] }}</p>
+                                        <span class="text-xs text-gray-400">{{ $item['date'] }}</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Connecting Line -->
+                        <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10"></div>
+                    </div>
+                @endif
             </div>
+
         </div>
     </div>
 
