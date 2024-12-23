@@ -15,63 +15,59 @@ class SuratController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
-            'no_surat' => 'required|string|unique:surats',
-            'jenis_surat' => 'required|in:masuk,keluar',
-            'tanggal_surat' => 'required|date',
-            'pengirim' => 'required|string',
-            'nomor_pengirim' => 'required|string',
-            'penerima' => 'required|string',
-            'nomor_penerima' => 'required|string',
-            'alamat_penerima' => 'required|string',
-            'path' => 'required|mimes:pdf,doc,docx|max:2048',
-            'perihal' => 'required|string',
-        ], [
-            'path.mimes' => 'File harus berupa PDF atau Word (.doc, .docx).',
-            'path.required' => 'File surat harus diunggah.',
-            'path.max' => 'Ukuran file maximal 2MB.',
-            'unique' => 'Nomor surat sudah ada.'
-        ]);
+        try {
+            $request->validate([
+                'no_surat' => 'required|string|max:255',
+                'perihal' => 'required|string|max:255',
+                'pengirim' => 'required|string|max:255',
+                'penerima' => 'required|string|max:255',
+                'tanggal_surat' => 'required|date',
+                'jenis_surat' => 'required|in:masuk,keluar',
+                'lampiran' => 'required|file|mimes:pdf,doc,docx|max:10240',
+            ]);
 
-        if ($request->hasFile('path')) {
-            // Tentukan nama file yang akan disimpan
-            $fileName = 'surat_' . time() . '.' . $request->file('path')->getClientOriginalExtension();
-            $filePath = $request->file('path')->storeAs('uploads/surat', $fileName);
+            if ($request->hasFile('lampiran')) {
+                $file = $request->file('lampiran');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                // Simpan langsung ke storage/app/public/lampiran
+                $file->move(public_path('storage/lampiran'), $fileName);
+                // Simpan path relatif ke database
+                $pathForDB = 'lampiran/' . $fileName;
+            }
+
+            $surat = Surat::create([
+                'no_surat' => $request->no_surat,
+                'perihal' => $request->perihal,
+                'pengirim' => $request->pengirim,
+                'penerima' => $request->penerima,
+                'tanggal_surat' => $request->tanggal_surat,
+                'jenis_surat' => $request->jenis_surat,
+                'path' => $pathForDB ?? null,
+                'id_user' => Auth::id()
+            ]);
+
+            Tracking::create([
+                'id_surat' => $surat->id_surat,
+                'lokasi' => 'post office',
+                'status_surat' => 'diproses',
+                'tanggal_tracking' => Carbon::now()
+            ]);
+
+            ActivityLog::create([
+                'id_user' => Auth::user()->id_user,
+                'id_admin' => Auth::user()->id_admin,
+                'aksi' => 'melakukan input surat',
+                'deskripsi' => 'Melakukan input surat yang akan di kirim.' 
+            ]);
+            
+            if ($surat->jenis_surat == 'masuk') {
+                return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
+            }
+            return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
+        } catch (\Exception $e) {
+            \Log::error('Error saat upload file: ' . $e->getMessage());
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        $surat = Surat::create([
-            'id_user' => Auth::user()->id_user,
-            'no_surat' => $request->no_surat,
-            'jenis_surat' => $request->jenis_surat,
-            'tanggal_surat' => $request->tanggal_surat,
-            'pengirim' => $request->pengirim,
-            'no_pengirim' => $request->nomor_pengirim,
-            'penerima' => $request->penerima,
-            'no_penerima' => $request->nomor_penerima,
-            'alamat_penerima' => $request->alamat_penerima,
-            'path' => $filePath,
-            'perihal' => $request->perihal,
-            'lampiran' => $request->lampiran
-        ]);
-
-        Tracking::create([
-            'id_surat' => $surat->id_surat,
-            'lokasi' => 'post office',
-            'status_surat' => 'diproses',
-            'tanggal_tracking' => Carbon::now()
-        ]);
-
-        ActivityLog::create([
-            'id_user' => Auth::user()->id_user,
-            'id_admin' => Auth::user()->id_admin,
-            'aksi' => 'melakukan input surat',
-            'deskripsi' => 'Melakukan input surat yang akan di kirim.' 
-        ]);
-        
-        if ($surat->jenis_surat == 'masuk') {
-            return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
-        }
-        return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
     }
 
     public function suratMasuk(){
@@ -115,8 +111,18 @@ class SuratController extends Controller
         return back()->with('success', 'Surat berhasil dihapus');
     }
 
-    public function show(Surat $surat)
+    public function show($id)
     {
+        $surat = Surat::findOrFail($id);
+        
+        // Debug informasi file
+        if ($surat->path) {
+            $fullPath = storage_path('app/public/' . $surat->path);
+            $exists = file_exists($fullPath);
+            \Log::info('File path: ' . $fullPath);
+            \Log::info('File exists: ' . ($exists ? 'Yes' : 'No'));
+        }
+        
         return view('surat.show', compact('surat'));
     }
 
@@ -204,6 +210,14 @@ class SuratController extends Controller
             return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
         }
         return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
+    }
+
+    public function checkFile($path)
+    {
+        if (Storage::disk('public')->exists($path)) {
+            return response()->file(storage_path('app/public/' . $path));
+        }
+        return abort(404);
     }
 
 }
