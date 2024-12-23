@@ -14,6 +14,7 @@ class Lampiran extends Model
     protected $fillable = [
         'id_surat',
         'nama_file',
+        'path'
     ];
 
     // Relasi ke Surat

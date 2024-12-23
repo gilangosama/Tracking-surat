@@ -76,36 +76,51 @@
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-semibold text-gray-800">History Surat</h2>
-                    <button class="px-4 py-2 text-pink-400 hover:text-pink-500">
+                    <a href="{{ route('surat.masuk') }}" class="px-4 py-2 text-pink-400 hover:text-pink-500">
                         Lihat Semua
-                    </button>
+                    </a>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="w-full" id="example">
                         <thead>
-                            <tr class="text-left bg-slate-200">
-                                <th class="px-6 py-3 text-gray-600">Nama</th>
-                                <th class="px-6 py-3 text-gray-600">Pengirim</th>
-                                <th class="px-6 py-3 text-gray-600">Penerima</th>
-                                <th class="px-6 py-3 text-gray-600">Status</th>
-                                <th class="px-6 py-3 text-gray-600">Action</th>
+                            <tr class="bg-gray-50 border-b">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengirim</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penerima</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($suratTracking as $surat)
-                                <tr>
-                                    <td>{{ $surat->admin->name }}</td>
-                                    <td>{{ $surat->pengirim }}</td>
-                                    <td>{{ $surat->penerima }}</td>
-                                    <td>{{ $surat->lastTracking->status_surat ?? 'tidak ada status' }}</td>
-                                    <td>
-                                        <div class="flex gap-2 mb-2">
-                                            <a href="{{ route('surat.show', $surat->id_surat) }}"
-                                                class="text-white bg-pink-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">Detail</a>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ $surat->admin->name }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $surat->pengirim }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $surat->penerima }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        {{ $surat->lastTracking?->status_surat === 'sudah diterima' ? 'bg-green-100 text-green-800' : 
+                                           ($surat->lastTracking?->status_surat === 'sedang dikirim' ? 'bg-yellow-100 text-yellow-800' : 
+                                           'bg-gray-100 text-gray-800') }}">
+                                        {{ $surat->lastTracking?->status_surat ?? 'Belum ada status' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <a href="{{ route('surat.show', $surat->id_surat) }}" 
+                                       class="text-white bg-pink-500 px-3 py-1 rounded-full hover:bg-pink-600 transition-colors duration-200">
+                                        Detail
+                                    </a>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
