@@ -26,16 +26,15 @@ class DistributionController extends Controller
             ]
         );
 
-        $tracking = Tracking::create(
+        // Update or Create a new tracking record
+        $tracking = Tracking::updateOrCreate(
+            ['id_surat' => $validatedData['id_surat'], 'status_surat' => 'sudah diterima'],
             [
-                'id_surat' => $validatedData['id_surat'],
                 'lokasi' => 'kota tujuan',
-                'status_surat' => 'sudah diterima',
                 'tanggal_tracking' => now(),
             ]
         );
 
-        // dd($distribution, $tracking);
         return back()->with('success', 'Distribution created successfully.');
     }
 }

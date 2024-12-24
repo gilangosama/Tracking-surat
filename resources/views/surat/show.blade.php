@@ -51,7 +51,7 @@
                             </div>
                             <div class="flex">
                                 <span class="w-32 text-gray-600">Nomor Pengirim</span>
-                                <span class="text-gray-900">: {{ $surat->nomor_pengirim ?? '-' }}</span>
+                                <span class="text-gray-900">: {{ $surat->no_pengirim ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                             </div>
                             <div class="flex">
                                 <span class="w-32 text-gray-600">Nomor Penerima</span>
-                                <span class="text-gray-900">: {{ $surat->nomor_penerima ?? '-' }}</span>
+                                <span class="text-gray-900">: {{ $surat->no_penerima ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
