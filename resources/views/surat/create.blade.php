@@ -132,12 +132,12 @@
                     <div class="flex justify-center gap-4">
                         <button type="submit"
                             class="px-8 py-3 bg-pink-400 text-white rounded-full hover:bg-pink-500 transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide text-sm font-medium">
-                            {{ isset($surat) ? 'Update' : 'Kirim' }}
+                            {{ isset($surat) ? 'Update' : 'Kirim dan Beri ke Layanan' }}
                         </button>
-                        <button type="button"
+                        {{-- <button type="button"
                             class="px-8 py-3 border-2 border-pink-400 text-pink-400 rounded-full hover:bg-pink-400 hover:text-white transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide text-sm font-medium">
                             Beri ke Layanan
-                        </button>
+                        </button> --}}
                     </div>
                 </form>
             </div>

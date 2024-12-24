@@ -10,6 +10,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,5 +78,18 @@ Route::middleware('auth')->group(function () {
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+Route::post('/laporan/download', [LaporanController::class, 'downloadPDF'])->name('laporan.download');
+
+Route::get('storage/lampiran/{filename}', function ($filename) {
+    $path = storage_path('app/public/lampiran/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    
+    return response()->file($path);
+})->where('filename', '.*');
 
 require __DIR__.'/auth.php';

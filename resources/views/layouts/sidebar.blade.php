@@ -30,10 +30,10 @@
             <i class="fas fa-search w-6 mr-3 text-lg"></i>
             <span>Cek Track</span>
         </a>
-        <a href="{{ route('notifikasi') }}"
-            class="flex items-center px-5 py-4 {{ request()->routeIs('notifikasi') ? 'text-white bg-pink-400' : 'text-gray-600 hover:bg-gray-100 hover:text-pink-400' }} rounded-lg mb-2 transition-all duration-300">
-            <i class="fas fa-bell w-6 mr-3 text-lg"></i>
-            <span>Notifikasi</span>
+        <a href="{{ route('laporan') }}"
+            class="flex items-center px-5 py-4 {{ request()->routeIs('laporan') ? 'text-white bg-pink-400' : 'text-gray-600 hover:bg-gray-100 hover:text-pink-400' }} rounded-lg mb-2 transition-all duration-300">
+            <i class="fas fa-file-alt w-6 mr-3 text-lg"></i>
+            <span>Laporan</span>
         </a>
         <a href="{{ route('profile.edit') }}"
             class="flex items-center px-5 py-4 {{ request()->routeIs('profile.edit') ? 'text-white bg-pink-400' : 'text-gray-600 hover:bg-gray-100 hover:text-pink-400' }} rounded-lg mb-2 transition-all duration-300">
