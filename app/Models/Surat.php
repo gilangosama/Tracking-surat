@@ -46,6 +46,12 @@ class Surat extends Model
                     ->latest('created_at');
     }
 
+    public function trackingStatus()
+    {
+        return $this->hasMany(Tracking::class, 'id_surat', 'id_surat')
+                    ->where('status_surat', 'sudah diterima');
+    }
+
     // Relasi ke Distribution
     public function distributions()
     {

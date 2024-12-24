@@ -75,16 +75,24 @@ class SuratController extends Controller
     }
 
     public function suratMasuk(){
-        $suratMasuk = Surat::with('user')->where('jenis_surat', 'masuk')->get();
-        // dd($suratMasuk);
-
-        return view('surat.masuk', compact('suratMasuk'));
+        $role = auth()->user()->role;
+        if ('admin' == $role) {
+            $suratMasuk = Surat::with('user')->where('jenis_surat', 'masuk')->get();
+            return view('surat.masuk', compact('suratMasuk'));
+        } else {
+            $suratMasuk = Surat::with('user')->where('jenis_surat', 'masuk')->where('id_user', auth()->user()->id_user)->get();
+            return view('surat.masuk', compact('suratMasuk'));
+        }
     }
     public function suratKeluar(){
-        $suratKeluar = Surat::with('user')->where('jenis_surat', 'keluar')->get();
-        // dd($suratKeluar);
-
-        return view('surat.keluar', compact('suratKeluar'));
+        $role = auth()->user()->role;
+        if ('admin' == $role) {
+            $suratKeluar = Surat::with('user')->where('jenis_surat', 'keluar')->get();
+            return view('surat.keluar', compact('suratKeluar'));
+        } else {
+            $suratKeluar = Surat::with('user')->where('jenis_surat', 'keluar')->where('id_user', auth()->user()->id_user)->get();
+            return view('surat.keluar', compact('suratKeluar'));
+        }
     }
 
     public function download(Surat $surat)
