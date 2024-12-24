@@ -107,12 +107,18 @@
                                     <div class="text-sm text-gray-900">{{ $surat->penerima }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $surat->lastTracking?->status_surat === 'sudah diterima' ? 'bg-green-100 text-green-800' : 
-                                           ($surat->lastTracking?->status_surat === 'sedang dikirim' ? 'bg-yellow-100 text-yellow-800' : 
-                                           'bg-gray-100 text-gray-800') }}">
-                                        {{ $surat->lastTracking?->status_surat ?? 'Belum ada status' }}
-                                    </span>
+                                    @if($surat->status === 'draft')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            Draft
+                                        </span>
+                                    @else
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            {{ $surat->lastTracking?->status_surat === 'sudah diterima' ? 'bg-green-100 text-green-800' : 
+                                               ($surat->lastTracking?->status_surat === 'sedang dikirim' ? 'bg-yellow-100 text-yellow-800' : 
+                                               'bg-gray-100 text-gray-800') }}">
+                                            {{ $surat->lastTracking?->status_surat ?? 'Belum ada status' }}
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <a href="{{ route('surat.show', $surat->id_surat) }}" 

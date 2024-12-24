@@ -26,18 +26,14 @@ class SuratController extends Controller
             'alamat_penerima' => 'required|string',
             'path' => 'required|mimes:pdf,doc,docx|max:2048',
             'perihal' => 'required|string',
-        ], [
-            'path.mimes' => 'File harus berupa PDF atau Word (.doc, .docx).',
-            'path.required' => 'File surat harus diunggah.',
-            'path.max' => 'Ukuran file maximal 2MB.',
-            'unique' => 'Nomor surat sudah ada.'
         ]);
 
         if ($request->hasFile('path')) {
-            // Tentukan nama file yang akan disimpan
             $fileName = 'surat_' . time() . '.' . $request->file('path')->getClientOriginalExtension();
             $filePath = $request->file('path')->storeAs('uploads/surat', $fileName);
         }
+
+        $status = $request->input('action') === 'draft' ? 'draft' : 'terkirim';
 
         $surat = Surat::create([
             'id_user' => Auth::user()->id_user,
@@ -51,27 +47,33 @@ class SuratController extends Controller
             'alamat_penerima' => $request->alamat_penerima,
             'path' => $filePath,
             'perihal' => $request->perihal,
-            'lampiran' => $request->lampiran
+            'status' => $status
         ]);
 
-        Tracking::create([
-            'id_surat' => $surat->id_surat,
-            'lokasi' => 'post office',
-            'status_surat' => 'diproses',
-            'tanggal_tracking' => Carbon::now()
-        ]);
+        if ($status === 'terkirim') {
+            Tracking::create([
+                'id_surat' => $surat->id_surat,
+                'lokasi' => 'post office',
+                'status_surat' => 'diproses',
+                'tanggal_tracking' => Carbon::now()
+            ]);
 
-        ActivityLog::create([
-            'id_user' => Auth::user()->id_user,
-            'id_admin' => Auth::user()->id_admin,
-            'aksi' => 'melakukan input surat',
-            'deskripsi' => 'Melakukan input surat yang akan di kirim.' 
-        ]);
-        
-        if ($surat->jenis_surat == 'masuk') {
-            return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
+            ActivityLog::create([
+                'id_user' => Auth::user()->id_user,
+                'id_admin' => Auth::user()->id_admin,
+                'aksi' => 'melakukan input surat',
+                'deskripsi' => 'Melakukan input surat yang akan di kirim.'
+            ]);
+
+            $message = 'Surat berhasil dikirim!';
+        } else {
+            $message = 'Surat berhasil disimpan sebagai draft!';
         }
-        return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
+
+        if ($surat->jenis_surat == 'masuk') {
+            return redirect()->route('surat.masuk')->with('success', $message);
+        }
+        return redirect()->route('surat.keluar')->with('success', $message);
     }
 
     public function suratMasuk(){
@@ -212,6 +214,20 @@ class SuratController extends Controller
             return redirect()->route('surat.masuk')->with('success', 'Surat berhasil diperbarui!');
         }
         return redirect()->route('surat.keluar')->with('success', 'Surat berhasil diperbarui!');
+    }
+
+    public function sendDraft(Surat $surat)
+    {
+        $surat->update(['status' => 'terkirim']);
+        
+        Tracking::create([
+            'id_surat' => $surat->id_surat,
+            'lokasi' => 'post office',
+            'status_surat' => 'diproses',
+            'tanggal_tracking' => Carbon::now()
+        ]);
+
+        return back()->with('success', 'Surat berhasil dikirim!');
     }
 
 }

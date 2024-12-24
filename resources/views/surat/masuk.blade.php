@@ -40,6 +40,7 @@
                                 <th>Perihal</th>
                                 <th>No Surat</th>
                                 <th>Tanggal</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -50,6 +51,29 @@
                                     <td>{{ $surat->perihal }}</td>
                                     <td>{{ $surat->no_surat }}</td>
                                     <td>{{ $surat->tanggal_surat }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($surat->status === 'draft')
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                                                    Draft
+                                                </span>
+                                                <form action="{{ route('surat.send-draft', $surat->id_surat) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" 
+                                                        class="text-white bg-green-500 px-3 py-1 rounded-full transform hover:-translate-y-1 transition-all duration-300">
+                                                        Kirim
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @else
+                                            <span class="px-2 py-1 text-xs rounded-full 
+                                                {{ $surat->lastTracking?->status_surat === 'sudah diterima' ? 'bg-green-100 text-green-800' : 
+                                                   ($surat->lastTracking?->status_surat === 'sedang dikirim' ? 'bg-yellow-100 text-yellow-800' : 
+                                                   'bg-gray-100 text-gray-800') }}">
+                                                {{ $surat->lastTracking?->status_surat ?? 'Belum ada status' }}
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <div class="flex gap-2 mb-2">
                                             <a href="{{ route('surat.show', $surat->id_surat) }}"

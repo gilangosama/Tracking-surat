@@ -92,4 +92,6 @@ Route::get('storage/lampiran/{filename}', function ($filename) {
     return response()->file($path);
 })->where('filename', '.*');
 
+Route::post('/surat/{surat}/send-draft', [SuratController::class, 'sendDraft'])->name('surat.send-draft');
+
 require __DIR__.'/auth.php';
