@@ -218,16 +218,20 @@ class SuratController extends Controller
 
     public function sendDraft(Surat $surat)
     {
-        $surat->update(['status' => 'terkirim']);
-        
-        Tracking::create([
-            'id_surat' => $surat->id_surat,
-            'lokasi' => 'post office',
-            'status_surat' => 'diproses',
-            'tanggal_tracking' => Carbon::now()
-        ]);
+        try {
+            $surat->update(['status' => 'terkirim']);
+            
+            Tracking::create([
+                'id_surat' => $surat->id_surat,
+                'lokasi' => 'post office',
+                'status_surat' => 'diproses',
+                'tanggal_tracking' => Carbon::now()
+            ]);
 
-        return back()->with('success', 'Surat berhasil dikirim!');
+            return back()->with('success', 'Surat berhasil dikirim!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat mengirim surat.');
+        }
     }
 
 }

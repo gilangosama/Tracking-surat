@@ -111,12 +111,12 @@
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                             Draft
                                         </span>
-                                    @else
+                                    @elseif($surat->status === 'terkirim')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                             {{ $surat->lastTracking?->status_surat === 'sudah diterima' ? 'bg-green-100 text-green-800' : 
                                                ($surat->lastTracking?->status_surat === 'sedang dikirim' ? 'bg-yellow-100 text-yellow-800' : 
                                                'bg-gray-100 text-gray-800') }}">
-                                            {{ $surat->lastTracking?->status_surat ?? 'Belum ada status' }}
+                                            {{ $surat->lastTracking?->status_surat ?? 'Diproses' }}
                                         </span>
                                     @endif
                                 </td>

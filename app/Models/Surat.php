@@ -10,17 +10,17 @@ class Surat extends Model
 
     protected $fillable = [
         'id_user',
-        'jenis_surat',
         'no_surat',
-        'perihal',
-        'lampiran',
+        'jenis_surat',
         'tanggal_surat',
         'pengirim',
         'no_pengirim',
         'penerima',
         'no_penerima',
         'alamat_penerima',
-        'path'
+        'path',
+        'perihal',
+        'status'
     ];
 
     // Relasi ke Admin
