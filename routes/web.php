@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,5 +94,10 @@ Route::get('storage/lampiran/{filename}', function ($filename) {
 })->where('filename', '.*');
 
 Route::post('/surat/{surat}/send-draft', [SuratController::class, 'sendDraft'])->name('surat.send-draft');
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/activity', [ActivityLogController::class, 'index'])->name('activity.index');
+    Route::get('/activity/download', [ActivityLogController::class, 'downloadPDF'])->name('activity.download');
+});
 
 require __DIR__.'/auth.php';

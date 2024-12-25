@@ -4,6 +4,14 @@
         {{-- <h2 class="text-gray-800 text-xl font-semibold">Tracking Office</h2> --}}
     </div>
 
+    @if(auth()->user()->role === 'admin')
+    <a href="{{ route('activity.download') }}" 
+        class="flex items-center px-5 py-4 text-gray-600 hover:bg-gray-100 hover:text-pink-400 rounded-lg mb-2 transition-all duration-300">
+        <i class="fas fa-download w-6 mr-3 text-lg"></i>
+        <span>Download Aktivitas</span>
+    </a>
+@endif
+
     <div class="mt-8">
         <a href="{{ route('dashboard') }}"
             class="flex items-center px-5 py-4 {{ request()->routeIs('dashboard') ? 'text-white bg-pink-400' : 'text-gray-600 hover:bg-gray-100 hover:text-pink-400' }} rounded-lg mb-2 transition-all duration-300">

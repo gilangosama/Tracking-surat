@@ -50,19 +50,19 @@ class SuratController extends Controller
             'status' => $status
         ]);
 
+        ActivityLog::create([
+            'id_user' => Auth::user()->id_user,
+            'id_admin' => Auth::user()->id_admin,
+            'aksi' => 'melakukan input surat',
+            'deskripsi' => 'Melakukan input ' . $request->jenis_surat . ' dengan nomor surat ' . $surat->no_surat
+        ]);
+
         if ($status === 'terkirim') {
             Tracking::create([
                 'id_surat' => $surat->id_surat,
                 'lokasi' => 'post office',
                 'status_surat' => 'diproses',
                 'tanggal_tracking' => Carbon::now()
-            ]);
-
-            ActivityLog::create([
-                'id_user' => Auth::user()->id_user,
-                'id_admin' => Auth::user()->id_admin,
-                'aksi' => 'melakukan input surat',
-                'deskripsi' => 'Melakukan input surat yang akan di kirim.'
             ]);
 
             $message = 'Surat berhasil dikirim!';
@@ -221,11 +221,11 @@ class SuratController extends Controller
         try {
             $surat->update(['status' => 'terkirim']);
             
-            Tracking::create([
-                'id_surat' => $surat->id_surat,
-                'lokasi' => 'post office',
-                'status_surat' => 'diproses',
-                'tanggal_tracking' => Carbon::now()
+            ActivityLog::create([
+                'id_user' => Auth::user()->id_user,
+                'id_admin' => Auth::user()->id_admin,
+                'aksi' => 'mengirim surat',
+                'deskripsi' => 'Mengirim ' . $surat->jenis_surat . ' dengan nomor surat ' . $surat->no_surat
             ]);
 
             return back()->with('success', 'Surat berhasil dikirim!');
